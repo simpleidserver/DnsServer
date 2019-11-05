@@ -1,14 +1,15 @@
-﻿using System;
+﻿using DnsServer.Messages;
+using System;
 
 namespace DnsServer.Events
 {
     public class DnsRequestReceivedEventArgs : EventArgs
     {
-        public DnsRequestReceivedEventArgs(byte[] receivedBuffer)
+        public DnsRequestReceivedEventArgs(DNSRequestMessage dnsRequestMessage)
         {
-            ReceivedBuffer = receivedBuffer;
+            DnsRequestMessage = dnsRequestMessage;
         }
 
-        public byte[] ReceivedBuffer { get; set; }
+        public DNSRequestMessage DnsRequestMessage { get; set; }
     }
 }

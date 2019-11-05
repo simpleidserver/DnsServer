@@ -1,6 +1,4 @@
 ﻿using DnsServer.Domains;
-using DnsServer.Extensions;
-using System.Collections.Generic;
 
 namespace DnsServer.Messages
 {

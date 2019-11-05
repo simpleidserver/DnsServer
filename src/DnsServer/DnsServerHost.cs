@@ -63,10 +63,15 @@ namespace DnsServer
 
         private async Task HandleDNSRequest()
         {
-            var receiveResult = await _udpClient.ReceiveAsync().WithCancellation(_cancellationToken);
-            if (DnsRequestReceived != null)
+            UdpReceiveResult receiveResult;
+            try
             {
-                DnsRequestReceived(this, new DnsRequestReceivedEventArgs(receiveResult.Buffer));
+
+                receiveResult = await _udpClient.ReceiveAsync().WithCancellation(_cancellationToken);
+            }
+            catch(SocketException)
+            {
+                return;
             }
 
             var queue = new Queue<byte>(receiveResult.Buffer);
@@ -74,6 +79,11 @@ namespace DnsServer
             if (!requestMessage.Questions.Any(q => q.Label == "google.com"))
             {
                 return;
+            }
+
+            if (DnsRequestReceived != null)
+            {
+                DnsRequestReceived(this, new DnsRequestReceivedEventArgs(requestMessage));
             }
 
             var dnsRequestHandler = _serviceProvider.GetService<IDnsRequestHandler>();

@@ -28,6 +28,7 @@ namespace DnsServer.ConsoleClient
                 })
                 .Build();
             dnsServer.Run();
+            dnsServer.DnsRequestReceived += HandleDnsRequestReceived;
             dnsServer.DnsServerStarted += HandleDnsServerStarted;
             dnsServer.DnsServerStopped += HandleDnsServerStopped;
 
@@ -37,6 +38,11 @@ namespace DnsServer.ConsoleClient
 
             Console.WriteLine("Press a key to quit the application");
             Console.ReadKey();
+        }
+
+        private static void HandleDnsRequestReceived(object sender, Events.DnsRequestReceivedEventArgs e)
+        {
+            Console.WriteLine($"Request {e.DnsRequestMessage.Header.Id} received");
         }
 
         private static void HandleDnsServerStopped(object sender, EventArgs e)
