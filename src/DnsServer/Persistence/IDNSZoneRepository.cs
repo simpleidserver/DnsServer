@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace DnsServer.Persistence
 {
-    public interface IDNSZoneRepository
+    public interface IDnsZoneRepository
     {
         Task<DNSZone> FindDNSZoneByLabel(string label, CancellationToken token);
         Task<IEnumerable<DNSZone>> FindDNSZoneByLabels(IEnumerable<string> labels, CancellationToken token);

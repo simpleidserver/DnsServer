@@ -9,7 +9,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DnsServer", "src\DnsServer\
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "02. Startup Layer", "02. Startup Layer", "{99C091AE-BDDC-4099-B953-61CB77819816}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DnsServer.ConsoleClient", "src\DnsServer.ConsoleClient\DnsServer.ConsoleClient.csproj", "{B9EE88CB-79B0-4733-82A9-4F45306E3EF0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DnsServer.ConsoleClient", "src\DnsServer.ConsoleClient\DnsServer.ConsoleClient.csproj", "{B9EE88CB-79B0-4733-82A9-4F45306E3EF0}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "03. Testing Layer", "03. Testing Layer", "{F0A96A7D-E821-43CD-B7EB-CB5BFFAA1F5A}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DnsServer.Tests", "tests\DnsServer.Tests.csproj", "{A49EBAB7-51B8-45C2-9096-D46BE50CE703}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -25,6 +29,10 @@ Global
 		{B9EE88CB-79B0-4733-82A9-4F45306E3EF0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B9EE88CB-79B0-4733-82A9-4F45306E3EF0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B9EE88CB-79B0-4733-82A9-4F45306E3EF0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A49EBAB7-51B8-45C2-9096-D46BE50CE703}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A49EBAB7-51B8-45C2-9096-D46BE50CE703}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A49EBAB7-51B8-45C2-9096-D46BE50CE703}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A49EBAB7-51B8-45C2-9096-D46BE50CE703}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -32,6 +40,7 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{DA5C6A98-52EB-48AA-B616-C4010C222D36} = {F78A8B31-336A-4688-A854-5F74E5ACC14D}
 		{B9EE88CB-79B0-4733-82A9-4F45306E3EF0} = {99C091AE-BDDC-4099-B953-61CB77819816}
+		{A49EBAB7-51B8-45C2-9096-D46BE50CE703} = {F0A96A7D-E821-43CD-B7EB-CB5BFFAA1F5A}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {98B39694-18F2-478E-8932-3B25448E485D}

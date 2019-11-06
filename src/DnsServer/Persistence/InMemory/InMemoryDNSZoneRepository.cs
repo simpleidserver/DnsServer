@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace DnsServer.Persistence.InMemory
 {
-    public class InMemoryDNSZoneRepository : IDNSZoneRepository
+    public class InMemoryDnsZoneRepository : IDnsZoneRepository
     {
         private readonly List<DNSZone> _dnsZones;
 
-        public InMemoryDNSZoneRepository(List<DNSZone> dnsZones)
+        public InMemoryDnsZoneRepository(List<DNSZone> dnsZones)
         {
             _dnsZones = dnsZones;
         }

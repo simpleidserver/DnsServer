@@ -5,12 +5,17 @@ namespace DnsServer.Domains
 {
     public class BaseDomainEnum
     {
-        public BaseDomainEnum(short value)
+        public BaseDomainEnum(uint value)
         {
             Value = value;
         }
 
-        public short Value { get; private set; }
+        public uint Value { get; private set; }
+
+        public override string ToString()
+        {
+            return this.Value.ToString();
+        }
 
         public override bool Equals(object obj)
         {
@@ -24,7 +29,7 @@ namespace DnsServer.Domains
 
         public ICollection<byte> ToBytes()
         {
-            return ((short)(Value)).ToBytes();
+            return Value.ToBytes();
         }
 
         public override int GetHashCode()

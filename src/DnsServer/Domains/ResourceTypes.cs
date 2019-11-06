@@ -2,7 +2,7 @@
 {
     public class ResourceTypes : BaseDomainEnum
     {
-        public ResourceTypes(short value) : base(value)
+        public ResourceTypes(uint value) : base(value)
         {
         }
 
@@ -70,5 +70,9 @@
         /// Text strings.
         /// </summary>
         public static ResourceTypes TXT = new ResourceTypes(16);
+        /// <summary>
+        /// Maps a domain name to the IP address (Version 6) 
+        /// </summary>
+        public static ResourceTypes AAAA = new ResourceTypes(28);
     }
 }

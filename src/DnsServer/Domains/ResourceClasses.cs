@@ -2,7 +2,7 @@
 {
     public class ResourceClasses : BaseDomainEnum
     {
-        public ResourceClasses(short value) : base(value) { }
+        public ResourceClasses(uint value) : base(value) { }
 
         /// <summary>
         /// The internet.

@@ -10,7 +10,7 @@ namespace DnsServer.Messages
         public static DNSHeaderFlags SERVER_STATUS = new DNSHeaderFlags(0x1000);
         public static DNSHeaderFlags AUTHORITATIVE_ANSWER = new DNSHeaderFlags(0x0400);
         public static DNSHeaderFlags TRUNCATED = new DNSHeaderFlags(0x0200);
-        public static DNSHeaderFlags RECURSION_DESIRED = new DNSHeaderFlags(0x0100);
+        public static DNSHeaderFlags STANDARD_QUERY = new DNSHeaderFlags(0x0100);
         public static DNSHeaderFlags RECURSION_AVAILABLE = new DNSHeaderFlags(0x0080);
         /// <summary>
         /// The name server was unable to interpret the query.
@@ -38,7 +38,7 @@ namespace DnsServer.Messages
 
         public DNSHeaderFlags() { }
 
-        public DNSHeaderFlags(int value)
+        public DNSHeaderFlags(uint value)
         {
             Value = value;
         }
@@ -48,7 +48,7 @@ namespace DnsServer.Messages
             SetFlag(flag.Value);
         }
 
-        public void SetFlag(int flag)
+        public void SetFlag(uint flag)
         {
             Value = Value | flag;
         }
@@ -65,14 +65,14 @@ namespace DnsServer.Messages
 
         public ICollection<byte> ToBytes()
         {
-            return ((short)(Value)).ToBytes();
+            return Value.ToBytes();
         }
 
-        public static DNSHeaderFlags Extract(Queue<byte> buffer)
+        public static DNSHeaderFlags Extract(DNSReadBufferContext buffer)
         {
-            return new DNSHeaderFlags(buffer.GetShort());
+            return new DNSHeaderFlags(buffer.NextUInt());
         }
 
-        public int Value { get; private set; }
+        public uint Value { get; private set; }
     }
 }

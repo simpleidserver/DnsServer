@@ -7,8 +7,8 @@ namespace DnsServer.Messages
         /// <summary>
         /// Any classes.
         /// </summary>
-        public static QuestionClasses START = new QuestionClasses(255);
+        public static ResourceClasses START = new ResourceClasses(255);
 
-        public QuestionClasses(short value) : base(value) { }
+        public QuestionClasses(uint value) : base(value) { }
     }
 }

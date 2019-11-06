@@ -4,7 +4,7 @@ namespace DnsServer.Messages
 {
     public class QuestionTypes : ResourceTypes
     {
-        public QuestionTypes(short value) : base(value) { }
+        public QuestionTypes(uint value) : base(value) { }
         
         /// <summary>
         /// A request for a transfer of an entire zone.

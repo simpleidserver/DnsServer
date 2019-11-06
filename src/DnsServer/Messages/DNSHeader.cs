@@ -1,14 +1,11 @@
-﻿using DnsServer.Extensions;
-using System.Collections.Generic;
-
-namespace DnsServer.Messages
+﻿namespace DnsServer.Messages
 {
     public class DNSHeader
     {
         /// <summary>
         /// 16 bit identifier assigned by the program that generates any kind of query.
         /// </summary>
-        public short Id { get; set; }
+        public uint Id { get; set; }
         /// <summary>
         /// Flags
         /// </summary>
@@ -16,48 +13,46 @@ namespace DnsServer.Messages
         /// <summary>
         /// An unsigned 16 bit integer specifying the number of entries in the question section.
         /// </summary>
-        public short QdCount { get; set; }
+        public uint QdCount { get; set; }
         /// <summary>
         /// An unsigned 16 bit integer specifying the number of resource records in the answer section.
         /// </summary>
-        public short AnCount { get; set; }
+        public uint AnCount { get; set; }
         /// <summary>
         /// An unsigned 16 bit integer specifying the number of name server resource records in the authority records section.
         /// </summary>
-        public short NsCount { get; set; }
+        public uint NsCount { get; set; }
         /// <summary>
         /// An unsigned 16 bit integer specifying the number of resource records in the additional records section.
         /// </summary>
-        public short ArCount { get; set; }
+        public uint ArCount { get; set; }
         /// <summary>
         /// Get the length.
         /// </summary>
         public short Length { get => 12; }
 
-        public static DNSHeader Extract(Queue<byte> buffer)
+        public static DNSHeader Extract(DNSReadBufferContext context)
         {
             var result = new DNSHeader
             {
-                Id = buffer.GetShort(),
-                Flag = DNSHeaderFlags.Extract(buffer),
-                QdCount = buffer.GetShort(),
-                AnCount = buffer.GetShort(),
-                NsCount = buffer.GetShort(),
-                ArCount = buffer.GetShort()
+                Id = context.NextUInt(),
+                Flag = DNSHeaderFlags.Extract(context),
+                QdCount = context.NextUInt(),
+                AnCount = context.NextUInt(),
+                NsCount = context.NextUInt(),
+                ArCount = context.NextUInt()
             };
             return result;
         }
 
-        public ICollection<byte> Serialize()
+        public void Serialize(DNSWriterBufferContext context)
         {
-            var result = new List<byte>();
-            result.AddRange(Id.ToBytes());
-            result.AddRange(Flag.ToBytes());
-            result.AddRange(QdCount.ToBytes());
-            result.AddRange(AnCount.ToBytes());
-            result.AddRange(NsCount.ToBytes());
-            result.AddRange(ArCount.ToBytes());
-            return result;
+            context.WriteUInt(Id);
+            context.WriteFlag(Flag);
+            context.WriteUInt(QdCount);
+            context.WriteUInt(AnCount);
+            context.WriteUInt(NsCount);
+            context.WriteUInt(ArCount);
         }
     }
 }

@@ -30,6 +30,8 @@ namespace DnsServer
             _serviceProvider = serviceProvider;
         }
 
+        public IServiceProvider ServiceProvider => _serviceProvider;
+
         public void Run()
         {
             Task.Run(async () => await InternalRun());
@@ -74,8 +76,7 @@ namespace DnsServer
                 return;
             }
 
-            var queue = new Queue<byte>(receiveResult.Buffer);
-            var requestMessage = DNSRequestMessage.Extract(queue);
+            var requestMessage = DNSRequestMessage.Extract(receiveResult.Buffer);
             if (!requestMessage.Questions.Any(q => q.Label == "google.com"))
             {
                 return;

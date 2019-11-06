@@ -1,6 +1,5 @@
-﻿using DnsServer.Extensions;
+﻿using DnsServer.Domains;
 using System.Collections.Generic;
-using System.Text;
 
 namespace DnsServer.Messages
 {
@@ -13,31 +12,28 @@ namespace DnsServer.Messages
         /// <summary>
         /// A two octet code which specifies the type of the query.
         /// </summary>
-        public QuestionTypes QType { get; set; }
+        public ResourceTypes QType { get; set; }
         /// <summary>
         /// A two octet code that specifies the class of the query.
         /// </summary>
-        public QuestionClasses QClass { get; set; }
+        public ResourceClasses QClass { get; set; }
 
-        public static DNSQuestionSection Extract(Queue<byte> buffer)
+        public static DNSQuestionSection Extract(DNSReadBufferContext context)
         {
-            var str = Encoding.ASCII.GetString(buffer.ToArray());
             var result = new DNSQuestionSection
             {
-                Label = buffer.GetLabel(),
-                QType = new QuestionTypes(buffer.GetShort()),
-                QClass = new QuestionClasses(buffer.GetShort())
+                Label = context.NextLabel(),
+                QType = new QuestionTypes(context.NextUInt()),
+                QClass = new QuestionClasses(context.NextUInt())
             };
             return result;
         }
 
-        public ICollection<byte> Serialize()
+        public void Serialize(DNSWriterBufferContext context)
         {
-            var result = new List<byte>();
-            result.AddRange(Label.ConvertLabelToBytes());
-            result.AddRange(QType.ToBytes());
-            result.AddRange(QClass.ToBytes());
-            return result;
+            context.WriteLabel(Label);
+            context.WriteEnum(QType);
+            context.WriteEnum(QClass);
         }
     }
 }
