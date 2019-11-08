@@ -1,5 +1,6 @@
-﻿using DnsServer.Domains;
-using System.Collections.Generic;
+﻿// Copyright (c) SimpleIdServer. All rights reserved.
+// Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
+using DnsServer.Domains;
 
 namespace DnsServer.Messages
 {
@@ -23,8 +24,8 @@ namespace DnsServer.Messages
             var result = new DNSQuestionSection
             {
                 Label = context.NextLabel(),
-                QType = new QuestionTypes(context.NextUInt()),
-                QClass = new QuestionClasses(context.NextUInt())
+                QType = new QuestionTypes(context.NextUInt16()),
+                QClass = new QuestionClasses(context.NextUInt16())
             };
             return result;
         }

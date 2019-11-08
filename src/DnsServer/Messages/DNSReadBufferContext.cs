@@ -1,4 +1,7 @@
-﻿using DnsServer.Extensions;
+﻿// Copyright (c) SimpleIdServer. All rights reserved.
+// Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
+using DnsServer.Extensions;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -16,9 +19,9 @@ namespace DnsServer.Messages
 
         public Queue<byte> Buffer { get; set; }
         public List<ICollection<DNSZoneLabel>> ZoneLabels { get; set; }
-        public uint CurrentOffset { get; private set; }
+        public UInt16 CurrentOffset { get; private set; }
 
-        public IEnumerable<byte> NextBytes(uint length)
+        public IEnumerable<byte> NextBytes(UInt16 length)
         {
             var result = Buffer.Dequeue(length);
             CurrentOffset += length;
@@ -43,13 +46,6 @@ namespace DnsServer.Messages
             return str.ToString();
         }
 
-        public short NextShort()
-        {
-            var result = Buffer.GetShort();
-            CurrentOffset += 2;
-            return result;
-        }
-
         public int NextInt()
         {
             var result = Buffer.GetInt();
@@ -57,29 +53,61 @@ namespace DnsServer.Messages
             return result;
         }
 
-        public uint NextUInt()
+        public UInt16 NextUInt16()
         {
-            var result = Buffer.GetUInt();
+            var result = Buffer.GetUInt16();
             CurrentOffset += 2;
             return result;
         }
 
-        public string NextLabel()
+        public string NextString()
         {
-            List<DNSZoneLabel> newLabels = new List<DNSZoneLabel>();
+            var size = Buffer.First();
+            var result = Buffer.GetString();
+            CurrentOffset += size;
+            return result;
+        }
+
+        public uint NextUInt()
+        {
+            var result = Buffer.GetUInt();
+            CurrentOffset += 4;
+            return result;
+        }
+
+        public Int16 NextInt16()
+        {
+            var result = Buffer.GetInt16();
+            CurrentOffset += 2;
+            return result;
+        }
+
+        public string NextLabel(UInt16? maxOffset = null)
+        {
             List<DNSZoneLabel> labels = new List<DNSZoneLabel>();
-            InternalNextLabel(newLabels, labels);
-            ZoneLabels.Add(newLabels);
+            InternalNextLabel(labels, maxOffset);
+            ZoneLabels.Add(labels);
             return string.Join(".", labels.Select(l => l.Label));
         }
 
-        private void InternalNextLabel(List<DNSZoneLabel> newLabels, List<DNSZoneLabel> labels)
+        private void InternalNextLabel(List<DNSZoneLabel> labels, UInt16? maxOffset = null)
         {
-            var offset = Buffer.GetUInt(false);
+            var offset = Buffer.GetUInt16(false);
             if (offset >= 0xc000)
             {
-                offset = (uint)(NextUInt() ^ 0xc000);
-                labels.AddRange(ZoneLabels.First(m => m.Any(z => z.CurrentOffset == offset)).Where(z => z.CurrentOffset >= offset));
+                offset = (UInt16)(NextUInt16() ^ 0xc000);
+                var zoneLabel = ZoneLabels.First(m => m.Any(z => z.CurrentOffset == offset));
+                int index = 0;
+                for (var i = 0; i < zoneLabel.Count(); i++)
+                {
+                    if (zoneLabel.ElementAt(i).CurrentOffset == offset)
+                    {
+                        index = i;
+                        break;
+                    }
+                }
+
+                labels.AddRange(zoneLabel.Skip(index));
                 return;
             }
 
@@ -90,10 +118,16 @@ namespace DnsServer.Messages
                 return;
             }
 
-            CurrentOffset += (uint)label.Label.ToBytes().Count();
+            CurrentOffset += (UInt16)label.Label.ToBytes().Count();
             labels.Add(label);
-            newLabels.Add(label);
-            InternalNextLabel(newLabels, labels);
+            if (maxOffset != null && (CurrentOffset + 2) > maxOffset.Value)
+            {
+                CurrentOffset++;
+                Buffer.Dequeue();
+                return;
+            }
+
+            InternalNextLabel(labels, maxOffset);
         }
     }
 }

@@ -1,4 +1,7 @@
-﻿using DnsServer.Domains;
+﻿// Copyright (c) SimpleIdServer. All rights reserved.
+// Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
+using DnsServer.Domains;
+using DnsServer.Messages.Serializers;
 using DnsServer.Persistence;
 using DnsServer.Persistence.InMemory;
 using Microsoft.Extensions.DependencyInjection;
@@ -18,18 +21,13 @@ namespace DnsServer
         public DnsServerHostBuilder(Action<DnsServerOptions> callback = null)
         {
             _serviceCollection = new ServiceCollection();
-            _serviceCollection.AddTransient<IDnsRequestHandler, DnsRequestHandler>();
+            _serviceCollection.AddTransient<IDnsHandler, DnsAuthoritativeHandler>();
+            _serviceCollection.AddTransient<IDnsHandler, DnsRecursiveHandler>();
             _serviceCollection.AddTransient<IDnsResolver, DnsResolver>();
             _serviceCollection.AddSingleton<IDnsRootServerRepository>(new InMemoryDnsRootServerRepository(DnsServerConstants.DefaultRootServers));
             _serviceCollection.AddSingleton<IDnsZoneRepository>(new InMemoryDnsZoneRepository(new List<DNSZone>()));
             _serviceCollection.AddDistributedMemoryCache();
-            var options = new DnsServerOptions();
-            if (callback != null)
-            {
-                callback(options);
-            }
-
-            _serviceCollection.AddOptions<DnsServerOptions>();
+            _serviceCollection.Configure<DnsServerOptions>(callback);
         }
 
         public DnsServerHostBuilder UseAddress(string ipAddr = "127.0.0.1", int port = 53)

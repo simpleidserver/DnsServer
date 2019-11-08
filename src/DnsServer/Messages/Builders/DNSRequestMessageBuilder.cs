@@ -1,4 +1,6 @@
-﻿using System;
+﻿// Copyright (c) SimpleIdServer. All rights reserved.
+// Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
+using System;
 
 namespace DnsServer.Messages.Builders
 {
@@ -7,10 +9,10 @@ namespace DnsServer.Messages.Builders
         public DNSRequestMessageQuestionBuilder New()
         {
             var random = new Random();
-            return New((uint)random.Next(short.MinValue, short.MaxValue));
+            return New((UInt16)random.Next(UInt16.MinValue, UInt16.MaxValue));
         }
 
-        public DNSRequestMessageQuestionBuilder New(uint id)
+        public DNSRequestMessageQuestionBuilder New(UInt16 id)
         {
             var dnsRequestMessage = new DNSRequestMessage
             {

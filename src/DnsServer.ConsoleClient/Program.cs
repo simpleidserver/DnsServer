@@ -1,76 +1,64 @@
-﻿using DnsServer.Domains;
-using DnsServer.Messages;
+﻿// Copyright (c) SimpleIdServer. All rights reserved.
+// Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
+using DnsServer.Domains;
 using System;
 using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
+using System.Text.RegularExpressions;
 
 namespace DnsServer.ConsoleClient
 {
     class Program
     {
-        private static async Task CheckDnsResolver()
+        static void Main(string[] args)
         {
-            var dnsServer = new DnsServerHostBuilder()
+            var dnsServer = new DnsServerHostBuilder(o =>
+                {
+                    o.ExcludeForwardRequests.Add(new Regex("^.*example\\.com$"));
+                    o.ExcludeForwardRequests.Add(new Regex("^.*example\\.com\\.home$"));
+                    o.ExcludeForwardRequests.Add(new Regex("^.*in-addr\\.arpa$"));
+                })
                 .UseAddress("127.0.0.1", 53)
                 .AddDNSZones(new List<DNSZone>
                 {
-                    new DNSZone("google.com")
+                    new DNSZone("example.com")
                     {
                         ResourceRecords = new List<ResourceRecord>
                         {
-                            new AResourceRecord
+                            new AResourceRecord(100)
                             {
-                                Address = "127.0.0.1",
-                                Ttl = 119
+                                Address = "127.0.0.1"
+                            }
+                        }
+                    },
+                    new DNSZone("1.0.0.127.in-addr.arpa")
+                    {
+                        ResourceRecords = new List<ResourceRecord>
+                        {
+                            new PTRResourceRecord(100)
+                            {
+                                PTRDNAME = "localhost"
                             }
                         }
                     }
                 })
-                // .AddDNSRootServers(new List<DNSRootServer>
-                // {
-                //     new DNSRootServer("8.8.8.8", "Google")
-                // })
                 .Build();
-            var dnsResolver = (IDnsResolver)dnsServer.ServiceProvider.GetService(typeof(IDnsResolver));
-            var firstResult = await dnsResolver.Resolve("google.com", QuestionClasses.IN, QuestionTypes.A, CancellationToken.None);
-            var secondResult = await dnsResolver.Resolve("google.com", QuestionClasses.IN, QuestionTypes.A, CancellationToken.None);
+            dnsServer.Run();
+            dnsServer.DnsRequestReceived += HandleDnsRequestReceived;
+            dnsServer.DnsServerStarted += HandleDnsServerStarted;
+            dnsServer.DnsResponseSent += HandleDnsResponseSent;
+            dnsServer.DnsServerStopped += HandleDnsServerStopped;
+
+            Console.WriteLine("Stop the DNS server");
+            Console.ReadLine();
+            dnsServer.Stop();
+
+            Console.WriteLine("Press a key to quit the application");
+            Console.ReadKey();
         }
 
-        static void Main(string[] args)
+        private static void HandleDnsResponseSent(object sender, Events.DnsResponseSentEventArgs e)
         {
-            CheckDnsResolver().Wait();
-            Console.WriteLine("Press any key to quit the application");
-            Console.ReadKey();
-
-            // var dnsServer = new DnsServerHostBuilder()
-            //     .UseAddress("127.0.0.1", 53)
-            //     .AddDNSZones(new List<DNSZone>
-            //     {
-            //         new DNSZone("google.com")
-            //         {
-            //             ResourceRecords = new List<ResourceRecord>
-            //             {
-            //                 new AResourceRecord
-            //                 {
-            //                     Address = "127.0.0.1",
-            //                     Ttl = 119
-            //                 }
-            //             }
-            //         }
-            //     })
-            //     .Build();
-            // dnsServer.Run();
-            // dnsServer.DnsRequestReceived += HandleDnsRequestReceived;
-            // dnsServer.DnsServerStarted += HandleDnsServerStarted;
-            // dnsServer.DnsServerStopped += HandleDnsServerStopped;
-            // 
-            // Console.WriteLine("Stop the DNS server");
-            // Console.ReadLine();
-            // dnsServer.Stop();
-            // 
-            // Console.WriteLine("Press a key to quit the application");
-            // Console.ReadKey();
+            Console.WriteLine($"Response {e.DnsResponseMessage.Header.Id} sent");
         }
 
         private static void HandleDnsRequestReceived(object sender, Events.DnsRequestReceivedEventArgs e)

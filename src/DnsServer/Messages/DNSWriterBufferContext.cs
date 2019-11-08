@@ -1,5 +1,8 @@
-﻿using DnsServer.Domains;
+﻿// Copyright (c) SimpleIdServer. All rights reserved.
+// Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
+using DnsServer.Domains;
 using DnsServer.Extensions;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -34,6 +37,16 @@ namespace DnsServer.Messages
             Buffer.AddRange(i.ToBytes());
         }
 
+        public void WriteInt16(Int16 i)
+        {
+            Buffer.AddRange(i.ToBytes());
+        }
+
+        public void WriteUInt16(UInt16 i)
+        {
+            Buffer.AddRange(i.ToBytes());
+        }
+
         public void WriteFlag(DNSHeaderFlags flag)
         {
             Buffer.AddRange(flag.ToBytes());
@@ -58,6 +71,12 @@ namespace DnsServer.Messages
 
         public void WriteLabel(string str)
         {
+            if (string.IsNullOrEmpty(str))
+            {
+                Buffer.Add(0x00);
+                return;
+            }
+
             var kvp = GetLabel(str, Buffer.Count);
             Buffer.AddRange(kvp.Key);
             ZoneLabels.Add(kvp.Value);
@@ -71,10 +90,10 @@ namespace DnsServer.Messages
             int nb = 0;
             foreach (var label in labels)
             {
-                var zoneLabel = ZoneLabels.SelectMany(s => s).FirstOrDefault(s => s.Label == label);
+                var zoneLabel = GetDNSZoneLabel(labels, nb);
                 if (zoneLabel != null)
                 {
-                    var offset = zoneLabel.CurrentOffset | 0xc000;
+                    var offset = (UInt16)(zoneLabel.CurrentOffset | 0xc000);
                     currentOffset += 2;
                     result.AddRange(offset.ToBytes());
                     return new KeyValuePair<List<byte>, List<DNSZoneLabel>>(result, lst);
@@ -95,6 +114,33 @@ namespace DnsServer.Messages
             }
 
             return new KeyValuePair<List<byte>, List<DNSZoneLabel>>(result, lst);
+        }
+
+        private DNSZoneLabel GetDNSZoneLabel(IEnumerable<string> labels, int currentIndex)
+        {
+            var label = labels.ElementAt(currentIndex);
+            foreach(var collection in ZoneLabels)
+            {
+                for (var i = 0; i < collection.Count(); i++)
+                {
+                    var elt = collection.ElementAt(i);
+                    if (elt.Label != label)
+                    {
+                        continue;
+                    }
+
+                    var tmpPath = string.Join(".", collection.Skip(i).Select(t => t.Label));
+                    var fullPath = string.Join(".", labels.Skip(currentIndex));
+                    if (tmpPath != fullPath)
+                    {
+                        continue;
+                    }
+
+                    return elt;
+                }
+            }
+
+            return null;
         }
     }
 }

@@ -1,16 +1,19 @@
-﻿using DnsServer.Extensions;
+﻿// Copyright (c) SimpleIdServer. All rights reserved.
+// Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
+using DnsServer.Extensions;
+using System;
 using System.Collections.Generic;
 
 namespace DnsServer.Domains
 {
     public class BaseDomainEnum
     {
-        public BaseDomainEnum(uint value)
+        public BaseDomainEnum(UInt16 value)
         {
             Value = value;
         }
 
-        public uint Value { get; private set; }
+        public UInt16 Value { get; private set; }
 
         public override string ToString()
         {

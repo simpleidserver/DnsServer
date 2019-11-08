@@ -1,10 +1,13 @@
-﻿using DnsServer.Domains;
+﻿// Copyright (c) SimpleIdServer. All rights reserved.
+// Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
+using DnsServer.Domains;
+using System;
 
 namespace DnsServer.Messages
 {
     public class QuestionTypes : ResourceTypes
     {
-        public QuestionTypes(uint value) : base(value) { }
+        public QuestionTypes(UInt16 value) : base(value) { }
         
         /// <summary>
         /// A request for a transfer of an entire zone.

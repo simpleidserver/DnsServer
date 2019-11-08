@@ -1,8 +1,12 @@
-﻿namespace DnsServer.Domains
+﻿// Copyright (c) SimpleIdServer. All rights reserved.
+// Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
+using System;
+
+namespace DnsServer.Domains
 {
     public class ResourceTypes : BaseDomainEnum
     {
-        public ResourceTypes(uint value) : base(value)
+        public ResourceTypes(UInt16 value) : base(value)
         {
         }
 
@@ -14,14 +18,6 @@
         /// An authoritative name server.
         /// </summary>
         public static ResourceTypes NS = new ResourceTypes(2);
-        /// <summary>
-        /// A mail destination.
-        /// </summary>
-        public static ResourceTypes MD = new ResourceTypes(3);
-        /// <summary>
-        /// A mail forwarder.
-        /// </summary>
-        public static ResourceTypes MF = new ResourceTypes(4);
         /// <summary>
         /// The canonical name for an alias.
         /// </summary>

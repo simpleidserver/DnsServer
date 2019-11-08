@@ -1,16 +1,17 @@
-﻿using DnsServer.Domains;
+﻿// Copyright (c) SimpleIdServer. All rights reserved.
+// Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
+using DnsServer.Domains;
 
 namespace DnsServer.Messages.Serializers
 {
     public class AAAAResourceRecordSerializer : IResourceRecordSerializer
     {
+        public ResourceTypes ResourceType => ResourceTypes.AAAA;
+
         public DNSResourceRecord Extract(DNSReadBufferContext context, string name, ResourceClasses resourceClass, int ttl)
         {
-            var resourceRecord = new AAAAResourceRecord(resourceClass)
-            {
-                Ttl = ttl
-            };
-            var rdataLength = context.NextShort();
+            var resourceRecord = new AAAAResourceRecord(ttl, resourceClass);
+            var rdataLength = context.NextUInt16();
             resourceRecord.Address = context.NextIPV6();
             return new DNSResourceRecord
             {
@@ -21,7 +22,7 @@ namespace DnsServer.Messages.Serializers
 
         public void Serialize(DNSWriterBufferContext context, DNSResourceRecord resourceRecord)
         {
-            context.WriteUInt(16);
+            context.WriteUInt16(16);
             context.WriteIPV6(((AAAAResourceRecord)resourceRecord.ResourceRecord).Address);
         }
     }

@@ -1,13 +1,15 @@
-﻿namespace DnsServer.Domains
+﻿// Copyright (c) SimpleIdServer. All rights reserved.
+// Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
+namespace DnsServer.Domains
 {
     public class ResourceRecord
     {
-        public ResourceRecord()
+        public ResourceRecord(int ttl)
         {
-            Ttl = 559;
+            Ttl = ttl;
         }
 
-        public ResourceRecord(ResourceTypes resourceType, ResourceClasses resourceClass)
+        public ResourceRecord(int ttl, ResourceTypes resourceType, ResourceClasses resourceClass) : this(ttl)
         {
             ResourceType = resourceType;
             ResourceClass = resourceClass;

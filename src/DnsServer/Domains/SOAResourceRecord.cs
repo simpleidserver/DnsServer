@@ -1,13 +1,15 @@
-﻿namespace DnsServer.Domains
+﻿// Copyright (c) SimpleIdServer. All rights reserved.
+// Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
+namespace DnsServer.Domains
 {
     public class SOAResourceRecord : ResourceRecord
     {
-        public SOAResourceRecord() : base(ResourceTypes.SOA, ResourceClasses.IN)
+        public SOAResourceRecord(int ttl) : base(ttl, ResourceTypes.SOA, ResourceClasses.IN)
         {
 
         }
 
-        public SOAResourceRecord(ResourceClasses resourceClass) : base(ResourceTypes.SOA, resourceClass)
+        public SOAResourceRecord(int ttl, ResourceClasses resourceClass) : base(ttl, ResourceTypes.SOA, resourceClass)
         {
 
         }

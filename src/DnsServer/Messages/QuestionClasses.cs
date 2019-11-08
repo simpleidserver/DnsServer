@@ -1,4 +1,7 @@
-﻿using DnsServer.Domains;
+﻿// Copyright (c) SimpleIdServer. All rights reserved.
+// Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
+using DnsServer.Domains;
+using System;
 
 namespace DnsServer.Messages
 {
@@ -9,6 +12,6 @@ namespace DnsServer.Messages
         /// </summary>
         public static ResourceClasses START = new ResourceClasses(255);
 
-        public QuestionClasses(uint value) : base(value) { }
+        public QuestionClasses(UInt16 value) : base(value) { }
     }
 }

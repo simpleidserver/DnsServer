@@ -1,4 +1,7 @@
-﻿using DnsServer.Extensions;
+﻿// Copyright (c) SimpleIdServer. All rights reserved.
+// Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
+using DnsServer.Extensions;
+using System;
 using System.Collections.Generic;
 
 namespace DnsServer.Messages
@@ -12,6 +15,7 @@ namespace DnsServer.Messages
         public static DNSHeaderFlags TRUNCATED = new DNSHeaderFlags(0x0200);
         public static DNSHeaderFlags STANDARD_QUERY = new DNSHeaderFlags(0x0100);
         public static DNSHeaderFlags RECURSION_AVAILABLE = new DNSHeaderFlags(0x0080);
+        public static DNSHeaderFlags RECURSION_DESIRED = new DNSHeaderFlags(0x0100);
         /// <summary>
         /// The name server was unable to interpret the query.
         /// </summary>
@@ -38,29 +42,15 @@ namespace DnsServer.Messages
 
         public DNSHeaderFlags() { }
 
-        public DNSHeaderFlags(uint value)
+        public DNSHeaderFlags(UInt16 value)
         {
             Value = value;
         }
 
-        public void SetFlag(DNSHeaderFlags flag)
+        public DNSHeaderFlags SetFlag(DNSHeaderFlags flag)
         {
-            SetFlag(flag.Value);
-        }
-
-        public void SetFlag(uint flag)
-        {
-            Value = Value | flag;
-        }
-
-        public bool IsFlagSet(DNSHeaderFlags flag)
-        {
-            return IsFlagSet(flag.Value);
-        }
-
-        public bool IsFlagSet(long flag)
-        {
-            return (Value & flag) != 0;
+            Value = (UInt16)(Value | flag.Value);
+            return this;
         }
 
         public ICollection<byte> ToBytes()
@@ -70,9 +60,9 @@ namespace DnsServer.Messages
 
         public static DNSHeaderFlags Extract(DNSReadBufferContext buffer)
         {
-            return new DNSHeaderFlags(buffer.NextUInt());
+            return new DNSHeaderFlags(buffer.NextUInt16());
         }
 
-        public uint Value { get; private set; }
+        public UInt16 Value { get; private set; }
     }
 }
