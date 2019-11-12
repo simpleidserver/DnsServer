@@ -4,14 +4,14 @@ namespace DnsServer.Domains
 {
     public class AResourceRecord : ResourceRecord
     {
-        public AResourceRecord(int ttl) : base(ttl, ResourceTypes.A, ResourceClasses.IN)
+        public AResourceRecord(int ttl, string subZoneName = "") : base(ttl, ResourceTypes.A, ResourceClasses.IN)
         {
-
+            SubZoneName = subZoneName;
         }
 
-        public AResourceRecord(int ttl, ResourceClasses resourceClass) : base(ttl, ResourceTypes.A, resourceClass)
+        public AResourceRecord(int ttl, string subZoneName, ResourceClasses resourceClass) : base(ttl, ResourceTypes.A, resourceClass)
         {
-
+            SubZoneName = subZoneName;
         }
 
         /// <summary>

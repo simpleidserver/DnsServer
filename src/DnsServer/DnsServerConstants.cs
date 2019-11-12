@@ -45,5 +45,29 @@ namespace DnsServer
             QuestionTypes.TXT
             // QuestionTypes.WKS
         };
+
+        public static Dictionary<string, ResourceTypes> DefaultNameToResourceTypes = new Dictionary<string, ResourceTypes>
+        {
+            { "A", ResourceTypes.A },
+            { "AAAA", ResourceTypes.AAAA },
+            { "CNAME", ResourceTypes.CNAME },
+            { "MB", ResourceTypes.MB },
+            { "MG", ResourceTypes.MG },
+            { "MINFO", ResourceTypes.MINFO },
+            { "MR", ResourceTypes.MR },
+            { "MX", ResourceTypes.MX },
+            { "NS", ResourceTypes.NS },
+            { "PTR", ResourceTypes.PTR },
+            { "SOA", ResourceTypes.SOA },
+            { "TXT", ResourceTypes.TXT }
+        };
+
+        public static Dictionary<string, ResourceClasses> DefaultNamesToResourceClasses = new Dictionary<string, ResourceClasses>
+        {
+            { "CH", ResourceClasses.CH },
+            { "CS", ResourceClasses.CS },
+            { "IN", ResourceClasses.IN },
+            { "HS", ResourceClasses.HS },
+        };
     }
 }

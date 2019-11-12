@@ -10,7 +10,7 @@ namespace DnsServer.Messages.Serializers
 
         public DNSResourceRecord Extract(DNSReadBufferContext context, string name, ResourceClasses resourceClass, int ttl)
         {
-            var resourceRecord = new AAAAResourceRecord(ttl, resourceClass);
+            var resourceRecord = new AAAAResourceRecord(ttl, string.Empty, resourceClass);
             var rdataLength = context.NextUInt16();
             resourceRecord.Address = context.NextIPV6();
             return new DNSResourceRecord

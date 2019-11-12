@@ -11,7 +11,7 @@ namespace DnsServer.Messages.Serializers
 
         public DNSResourceRecord Extract(DNSReadBufferContext context, string name, ResourceClasses resourceClass, int ttl)
         {
-            var resourceRecord = new AResourceRecord(ttl, resourceClass);
+            var resourceRecord = new AResourceRecord(ttl, string.Empty, resourceClass);
             var rdataLength = context.NextUInt16();
             resourceRecord.Address = string.Join(".", context.NextBytes(rdataLength).Select(s => s.ToString()));
             return new DNSResourceRecord

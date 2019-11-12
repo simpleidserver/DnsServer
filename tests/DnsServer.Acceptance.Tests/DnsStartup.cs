@@ -9,7 +9,7 @@ namespace DnsServer.Acceptance.Tests
     public class DnsStartup
     {
         private static DnsStartup _instance;
-        private static DnsServerHost _dnsServerHost;
+        private static IDnsServerHost _dnsServerHost;
 
         private DnsStartup()
         {
@@ -19,7 +19,6 @@ namespace DnsServer.Acceptance.Tests
                     o.ExcludeForwardRequests.Add(new Regex("^.*example\\.com\\.home$"));
                     o.ExcludeForwardRequests.Add(new Regex("^.*in-addr\\.arpa$"));
                 })
-                .UseAddress("127.0.0.1", 53)
                 .AddDNSZones(new List<DNSZone>
                 {
                     new DNSZone("example.com")
@@ -90,7 +89,7 @@ namespace DnsServer.Acceptance.Tests
                     }
                 })
                 .Build();
-
+            _dnsServerHost.Run();
         }
 
         public static DnsStartup GetInstance()
@@ -105,7 +104,6 @@ namespace DnsServer.Acceptance.Tests
 
         public void Start()
         {
-            _dnsServerHost.Run();
         }
     }
 }

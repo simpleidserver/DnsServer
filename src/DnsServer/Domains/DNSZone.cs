@@ -9,6 +9,7 @@ namespace DnsServer.Domains
         public DNSZone(string zoneLabel)
         {
             ZoneLabel = zoneLabel;
+            ResourceRecords = new List<ResourceRecord>();
         }
 
         /// <summary>
