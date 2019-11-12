@@ -28,7 +28,7 @@ namespace DnsServer.Extensions
 
                 if (task != await Task.WhenAny(tasks))
                 {
-                    if (delayTask.IsCompleted)
+                    if (delayTask != null && delayTask.IsCompleted)
                     {
                         throw new TimeoutException();
                     }

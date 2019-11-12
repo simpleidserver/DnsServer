@@ -7,6 +7,7 @@ namespace DnsServer.Domains
         public ResourceRecord(int ttl)
         {
             Ttl = ttl;
+            SubZoneName = string.Empty;
         }
 
         public ResourceRecord(int ttl, ResourceTypes resourceType, ResourceClasses resourceClass) : this(ttl)
@@ -15,6 +16,7 @@ namespace DnsServer.Domains
             ResourceClass = resourceClass;
         }
         
+        public string SubZoneName { get; set; }
         public ResourceTypes ResourceType { get; set; }
         public ResourceClasses ResourceClass { get; set; }
         public int Ttl { get; set; }

@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.28307.645
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29503.13
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "01. Core Layer", "01. Core Layer", "{F78A8B31-336A-4688-A854-5F74E5ACC14D}"
 EndProject
@@ -19,6 +19,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	ProjectSection(SolutionItems) = preProject
 		Directory.Build.props = Directory.Build.props
 	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DnsServer.WpfClient", "src\DnsServer.WpfClient\DnsServer.WpfClient.csproj", "{C6F08D20-A313-44AE-AAE5-BFF43B86D8E3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -38,6 +40,10 @@ Global
 		{66EF4897-6A24-45D8-A8FF-354526A658FD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{66EF4897-6A24-45D8-A8FF-354526A658FD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{66EF4897-6A24-45D8-A8FF-354526A658FD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C6F08D20-A313-44AE-AAE5-BFF43B86D8E3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C6F08D20-A313-44AE-AAE5-BFF43B86D8E3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C6F08D20-A313-44AE-AAE5-BFF43B86D8E3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C6F08D20-A313-44AE-AAE5-BFF43B86D8E3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -46,6 +52,7 @@ Global
 		{DA5C6A98-52EB-48AA-B616-C4010C222D36} = {F78A8B31-336A-4688-A854-5F74E5ACC14D}
 		{B9EE88CB-79B0-4733-82A9-4F45306E3EF0} = {99C091AE-BDDC-4099-B953-61CB77819816}
 		{66EF4897-6A24-45D8-A8FF-354526A658FD} = {F0A96A7D-E821-43CD-B7EB-CB5BFFAA1F5A}
+		{C6F08D20-A313-44AE-AAE5-BFF43B86D8E3} = {99C091AE-BDDC-4099-B953-61CB77819816}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {98B39694-18F2-478E-8932-3B25448E485D}

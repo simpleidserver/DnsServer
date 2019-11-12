@@ -5,43 +5,44 @@ using DnsServer.Exceptions;
 using DnsServer.Extensions;
 using DnsServer.Messages;
 using DnsServer.Messages.Builders;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using System;
 using System.Linq;
+using System.Net;
 using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace DnsServer
 {
-    public class DnsServerHost
+    public class DnsServerHost : IDnsServerHost
     {
-        private readonly UdpClient _udpClient;
-        private readonly CancellationToken _cancellationToken;
-        private readonly CancellationTokenSource _tokenSource;
-        private readonly ServiceProvider _serviceProvider;
+        private UdpClient _udpClient;
         private readonly DnsServerOptions _options;
+        private readonly IDnsRecursiveHandler _recursiveHandler;
+        private readonly IDnsAuthoritativeHandler _authoritativeHandler;
+        private CancellationToken _cancellationToken;
+        private CancellationTokenSource _tokenSource;
 
         public event EventHandler<EventArgs> DnsServerStarted;
         public event EventHandler<DnsRequestReceivedEventArgs> DnsRequestReceived;
         public event EventHandler<DnsResponseSentEventArgs> DnsResponseSent;
         public event EventHandler<EventArgs> DnsServerStopped;
 
-        internal DnsServerHost(UdpClient udpClient, ServiceProvider serviceProvider)
+        public DnsServerHost(IOptions<DnsServerOptions> options, IDnsRecursiveHandler recursiveHandler, IDnsAuthoritativeHandler authoritativeHandler)
         {
-            _udpClient = udpClient;
-            _tokenSource = new CancellationTokenSource();
-            _cancellationToken = _tokenSource.Token;
-            _serviceProvider = serviceProvider;
-            _options = _serviceProvider.GetService<IOptions<DnsServerOptions>>().Value;
+            _options = options.Value;
+            _recursiveHandler = recursiveHandler;
+            _authoritativeHandler = authoritativeHandler;
         }
 
-        public IServiceProvider ServiceProvider => _serviceProvider;
         public bool IsRunning { get; private set; }
 
-        public void Run()
+        public void Run(string ipAddr = "127.0.0.1", int port = 53)
         {
+            _tokenSource = new CancellationTokenSource();
+            _cancellationToken = _tokenSource.Token;
+            _udpClient = new UdpClient(new IPEndPoint(IPAddress.Parse(ipAddr), port));
             IsRunning = true;
             Task.Run(async () => await InternalRun());
         }
@@ -70,6 +71,7 @@ namespace DnsServer
             catch(OperationCanceledException)
             {
                 DnsServerStopped(this, new EventArgs());
+                _udpClient.Close();
             }
         }
 
@@ -96,19 +98,19 @@ namespace DnsServer
             catch (DNSNotImplementedException)
             {
                 var payload = builder.BuildNotImplemented(requestMessage).Serialize();
-                await _udpClient.SendAsync(payload.ToArray(), payload.Count(), receiveResult.RemoteEndPoint).WithCancellation(_cancellationToken);
+                await _udpClient.SendAsync(payload.ToArray(), payload.Count(), receiveResult.RemoteEndPoint).WithCancellation(_cancellationToken, _options.TimeOutInMilliSeconds);
                 return;
             }
             catch (DNSRefusedException)
             {
                 var payload = builder.BuildRefused(requestMessage).Serialize();
-                await _udpClient.SendAsync(payload.ToArray(), payload.Count(), receiveResult.RemoteEndPoint).WithCancellation(_cancellationToken);
+                await _udpClient.SendAsync(payload.ToArray(), payload.Count(), receiveResult.RemoteEndPoint).WithCancellation(_cancellationToken, _options.TimeOutInMilliSeconds);
                 return;
             }
             catch
             {
                 var payload = builder.BuildFormatError(requestMessage).Serialize();
-                await _udpClient.SendAsync(payload.ToArray(), payload.Count(), receiveResult.RemoteEndPoint).WithCancellation(_cancellationToken);
+                await _udpClient.SendAsync(payload.ToArray(), payload.Count(), receiveResult.RemoteEndPoint).WithCancellation(_cancellationToken, _options.TimeOutInMilliSeconds);
                 return;
             }
 
@@ -117,34 +119,33 @@ namespace DnsServer
                 DnsRequestReceived(this, new DnsRequestReceivedEventArgs(requestMessage));
             }
 
-            var dnsHandlers = _serviceProvider.GetServices<IDnsHandler>();
             DNSResponseMessage dnsResponseMessage = null;
             try
             {
                 if (!_options.ExcludeForwardRequests.Any(r => r.IsMatch(requestMessage.Questions.First().Label)))
                 {
-                    dnsResponseMessage = await dnsHandlers.First(h => h.Type.Equals(DnsHandlerTypes.Recursive)).Handle(requestMessage, _cancellationToken);
+                    dnsResponseMessage = await _recursiveHandler.Handle(requestMessage, _cancellationToken);
                 }
                 else
                 {
-                    dnsResponseMessage = await dnsHandlers.First(h => h.Type.Equals(DnsHandlerTypes.Authoritative)).Handle(requestMessage, _cancellationToken);
+                    dnsResponseMessage = await _authoritativeHandler.Handle(requestMessage, _cancellationToken);
                 }
             }
             catch(DNSNameErrorException)
             {
                 var payload = builder.BuildNameError(requestMessage).Serialize();
-                await _udpClient.SendAsync(payload.ToArray(), payload.Count(), receiveResult.RemoteEndPoint).WithCancellation(_cancellationToken);
+                await _udpClient.SendAsync(payload.ToArray(), payload.Count(), receiveResult.RemoteEndPoint).WithCancellation(_cancellationToken, _options.TimeOutInMilliSeconds);
                 return;
             }
             catch
             {
                 var payload = builder.BuildServerFailure(requestMessage).Serialize();
-                await _udpClient.SendAsync(payload.ToArray(), payload.Count(), receiveResult.RemoteEndPoint).WithCancellation(_cancellationToken);
+                await _udpClient.SendAsync(payload.ToArray(), payload.Count(), receiveResult.RemoteEndPoint).WithCancellation(_cancellationToken, _options.TimeOutInMilliSeconds);
                 return;
             }
 
             var response = dnsResponseMessage.Serialize();
-            await _udpClient.SendAsync(response.ToArray(), response.Count(), receiveResult.RemoteEndPoint).WithCancellation(_cancellationToken);
+            await _udpClient.SendAsync(response.ToArray(), response.Count(), receiveResult.RemoteEndPoint).WithCancellation(_cancellationToken, _options.TimeOutInMilliSeconds);
             if (DnsResponseSent != null)
             {
                 DnsResponseSent(this, new DnsResponseSentEventArgs(dnsResponseMessage));

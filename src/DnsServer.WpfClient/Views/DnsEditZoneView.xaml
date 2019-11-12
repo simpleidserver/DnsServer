@@ -1,0 +1,234 @@
+﻿<UserControl x:Class="DnsServer.WpfClient.Views.DnsEditZoneView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:prism="http://prismlibrary.com/"
+             xmlns:inf="clr-namespace:DnsServer.WpfClient.Infrastructures"
+             prism:ViewModelLocator.AutoWireViewModel="True"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="3*" />
+        </Grid.ColumnDefinitions>
+        <StackPanel>
+            <Label Content="{inf:Localization ResourceType}"></Label>
+            <ComboBox ItemsSource="{Binding ResourceTypes}" SelectedItem="{Binding SelectedResourceType}" DisplayMemberPath="Name"></ComboBox>
+            <Label Content="{inf:Localization ResourceClass}"></Label>
+            <ComboBox ItemsSource="{Binding ResourceClasses}" SelectedItem="{Binding SelectedResourceClass}" DisplayMemberPath="Name"></ComboBox>
+            <Label Content="{inf:Localization Ttl}"></Label>
+            <TextBox Text="{Binding Ttl, Mode=TwoWay}"></TextBox>
+            <!-- A RESOURCE RECORD -->
+            <StackPanel>
+                <StackPanel.Style>
+                    <Style TargetType="StackPanel">
+                        <Setter Property="Visibility" Value="Collapsed" />
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding SelectedResourceType.Name}" Value="A">
+                                <Setter Property="Visibility" Value="Visible" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </StackPanel.Style>
+                <Label Content="{inf:Localization SubDomainName}"></Label>
+                <TextBox Text="{Binding SubDomainName, Mode=TwoWay}"></TextBox>
+                <Label Content="{inf:Localization IPV4Address}"></Label>
+                <TextBox Text="{Binding AAddress, Mode=TwoWay}"></TextBox>
+            </StackPanel>
+            <!-- AAAA RESOURCE RECORD -->
+            <StackPanel>
+                <StackPanel.Style>
+                    <Style TargetType="StackPanel">
+                        <Setter Property="Visibility" Value="Collapsed" />
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding SelectedResourceType.Name}" Value="AAAA">
+                                <Setter Property="Visibility" Value="Visible" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </StackPanel.Style>
+                <Label Content="{inf:Localization SubDomainName}"></Label>
+                <TextBox Text="{Binding SubDomainName, Mode=TwoWay}"></TextBox>
+                <Label Content="{inf:Localization IPV6Address}"></Label>
+                <TextBox Text="{Binding AAAAAddress, Mode=TwoWay}"></TextBox>
+            </StackPanel>
+            <!-- CNAME RESOURCE RECORD -->
+            <StackPanel>
+                <StackPanel.Style>
+                    <Style TargetType="StackPanel">
+                        <Setter Property="Visibility" Value="Collapsed" />
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding SelectedResourceType.Name}" Value="CNAME">
+                                <Setter Property="Visibility" Value="Visible" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </StackPanel.Style>
+                <Label Content="{inf:Localization CNAME}"></Label>
+                <TextBox Text="{Binding CNAME, Mode=TwoWay}"></TextBox>
+            </StackPanel>
+            <!-- MB RESOURCE RECORD -->
+            <StackPanel>
+                <StackPanel.Style>
+                    <Style TargetType="StackPanel">
+                        <Setter Property="Visibility" Value="Collapsed" />
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding SelectedResourceType.Name}" Value="MB">
+                                <Setter Property="Visibility" Value="Visible" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </StackPanel.Style>
+                <Label Content="{inf:Localization MADNAME}"></Label>
+                <TextBox Text="{Binding MADNAME, Mode=TwoWay}"></TextBox>
+            </StackPanel>
+            <!-- MG RESOURCE RECORD -->
+            <StackPanel>
+                <StackPanel.Style>
+                    <Style TargetType="StackPanel">
+                        <Setter Property="Visibility" Value="Collapsed" />
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding SelectedResourceType.Name}" Value="MG">
+                                <Setter Property="Visibility" Value="Visible" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </StackPanel.Style>
+                <Label Content="{inf:Localization MGMNAME}"></Label>
+                <TextBox Text="{Binding MGMNAME, Mode=TwoWay}"></TextBox>
+            </StackPanel>
+            <!-- MINFO RESOURCE RECORD -->
+            <StackPanel>
+                <StackPanel.Style>
+                    <Style TargetType="StackPanel">
+                        <Setter Property="Visibility" Value="Collapsed" />
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding SelectedResourceType.Name}" Value="MINFO">
+                                <Setter Property="Visibility" Value="Visible" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </StackPanel.Style>
+                <Label Content="{inf:Localization RMAILBX}"></Label>
+                <TextBox Text="{Binding RMAILBX, Mode=TwoWay}"></TextBox>
+                <Label Content="{inf:Localization EMAILBX}"></Label>
+                <TextBox Text="{Binding EMAILBX, Mode=TwoWay}"></TextBox>
+            </StackPanel>
+            <!-- MR RESOURCE RECORD -->
+            <StackPanel>
+                <StackPanel.Style>
+                    <Style TargetType="StackPanel">
+                        <Setter Property="Visibility" Value="Collapsed" />
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding SelectedResourceType.Name}" Value="MR">
+                                <Setter Property="Visibility" Value="Visible" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </StackPanel.Style>
+                <Label Content="{inf:Localization NEWNAME}"></Label>
+                <TextBox Text="{Binding NEWNAME, Mode=TwoWay}"></TextBox>
+            </StackPanel>
+            <!-- MX RESOURCE RECORD -->
+            <StackPanel>
+                <StackPanel.Style>
+                    <Style TargetType="StackPanel">
+                        <Setter Property="Visibility" Value="Collapsed" />
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding SelectedResourceType.Name}" Value="MX">
+                                <Setter Property="Visibility" Value="Visible" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </StackPanel.Style>
+                <Label Content="{inf:Localization Preference}"></Label>
+                <TextBox Text="{Binding Preference, Mode=TwoWay}"></TextBox>
+                <Label Content="{inf:Localization Exchange}"></Label>
+                <TextBox Text="{Binding Exchange, Mode=TwoWay}"></TextBox>
+            </StackPanel>
+            <!-- NS RESOURCE RECORD -->
+            <StackPanel>
+                <StackPanel.Style>
+                    <Style TargetType="StackPanel">
+                        <Setter Property="Visibility" Value="Collapsed" />
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding SelectedResourceType.Name}" Value="NS">
+                                <Setter Property="Visibility" Value="Visible" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </StackPanel.Style>
+                <Label Content="{inf:Localization NSDName}"></Label>
+                <TextBox Text="{Binding NSDName, Mode=TwoWay}"></TextBox>
+            </StackPanel>
+            <!-- PTR RESOURCE RECORD -->
+            <StackPanel>
+                <StackPanel.Style>
+                    <Style TargetType="StackPanel">
+                        <Setter Property="Visibility" Value="Collapsed" />
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding SelectedResourceType.Name}" Value="PTR">
+                                <Setter Property="Visibility" Value="Visible" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </StackPanel.Style>
+                <Label Content="{inf:Localization PTRDNAME}"></Label>
+                <TextBox Text="{Binding PTRDNAME, Mode=TwoWay}"></TextBox>
+            </StackPanel>
+            <!-- SOA RESOURCE RECORD -->
+            <StackPanel>
+                <StackPanel.Style>
+                    <Style TargetType="StackPanel">
+                        <Setter Property="Visibility" Value="Collapsed" />
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding SelectedResourceType.Name}" Value="SOA">
+                                <Setter Property="Visibility" Value="Visible" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </StackPanel.Style>
+                <Label Content="{inf:Localization MName}"></Label>
+                <TextBox Text="{Binding MName, Mode=TwoWay}"></TextBox>
+                <Label Content="{inf:Localization RName}"></Label>
+                <TextBox Text="{Binding RName, Mode=TwoWay}"></TextBox>
+                <Label Content="{inf:Localization Serial}"></Label>
+                <TextBox Text="{Binding Serial, Mode=TwoWay}"></TextBox>
+                <Label Content="{inf:Localization Refresh}"></Label>
+                <TextBox Text="{Binding Refresh, Mode=TwoWay}"></TextBox>
+                <Label Content="{inf:Localization Retry}"></Label>
+                <TextBox Text="{Binding Retry, Mode=TwoWay}"></TextBox>
+                <Label Content="{inf:Localization Expire}"></Label>
+                <TextBox Text="{Binding Expire, Mode=TwoWay}"></TextBox>
+                <Label Content="{inf:Localization Minimum}"></Label>
+                <TextBox Text="{Binding Minimum, Mode=TwoWay}"></TextBox>
+            </StackPanel>
+            <!-- TXT RESOURCE RECORD -->
+            <StackPanel>
+                <StackPanel.Style>
+                    <Style TargetType="StackPanel">
+                        <Setter Property="Visibility" Value="Collapsed" />
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding SelectedResourceType.Name}" Value="TXT">
+                                <Setter Property="Visibility" Value="Visible" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </StackPanel.Style>
+                <Label Content="{inf:Localization TxtData}"></Label>
+                <TextBox Text="{Binding TxtData, Mode=TwoWay}"></TextBox>
+            </StackPanel>
+            <Button Content="{inf:Localization AddResourceRecord}" Command="{Binding AddZone}"></Button>
+        </StackPanel>
+        <DataGrid ItemsSource="{Binding ResourceRecords}" Grid.Column="1" AutoGenerateColumns="False">
+            <DataGrid.Columns>
+                <DataGridTextColumn IsReadOnly="True" Header="{inf:Localization ResourceType}" Binding="{Binding ResourceType}"/>
+                <DataGridTextColumn IsReadOnly="True" Header="{inf:Localization ResourceClass}" Binding="{Binding ResourceClass}"/>
+                <DataGridTextColumn IsReadOnly="True" Header="{inf:Localization Ttl}" Binding="{Binding Ttl}"/>
+                <DataGridTextColumn IsReadOnly="True" Header="{inf:Localization Content}" Binding="{Binding Content}"/>
+            </DataGrid.Columns>
+        </DataGrid>
+    </Grid>
+</UserControl>

@@ -17,7 +17,7 @@ using System.Threading.Tasks;
 
 namespace DnsServer
 {
-    public class DnsRecursiveHandler : IDnsHandler
+    public class DnsRecursiveHandler : IDnsRecursiveHandler
     {
         private readonly IDnsRootServerRepository _dnsRootServerRepository;
         private readonly IDistributedCache _distributedCache;
@@ -29,8 +29,6 @@ namespace DnsServer
             _distributedCache = distributedCache;
             _dnsServerOptions = dnsServerOptions.Value;
         }
-
-        public DnsHandlerTypes Type => DnsHandlerTypes.Recursive;
 
         public Task<DNSResponseMessage> Handle(DNSRequestMessage request, CancellationToken token)
         {

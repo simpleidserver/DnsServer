@@ -21,6 +21,5 @@ namespace DnsServer
         public string DefaultCpu { get; set; }
         public string DefaultOS { get; set; }
         public int DefaultTtl { get; set; }
-        // TODO : Ajouter des regular expression pour DNS forwarder.
     }
 }

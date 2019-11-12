@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace DnsServer
 {
-    public class DnsAuthoritativeHandler : IDnsHandler
+    public class DnsAuthoritativeHandler : IDnsAuthoritativeHandler
     {
         private readonly IDnsZoneRepository _dnsZoneRepository;
         private readonly DnsServerOptions _options;
@@ -22,8 +22,6 @@ namespace DnsServer
             _dnsZoneRepository = dnsZoneRepository;
             _options = options.Value;
         }
-
-        public DnsHandlerTypes Type => DnsHandlerTypes.Authoritative;
 
         public async Task<DNSResponseMessage> Handle(DNSRequestMessage request, CancellationToken token)
         {
@@ -59,18 +57,36 @@ namespace DnsServer
                 });
             }
 
-            foreach (var record in zone.ResourceRecords.Where(r => r.ResourceClass.Equals(question.QClass) && (r.ResourceType.Equals(question.QType) || question.QType.Equals(QuestionTypes.STAR)) && !(question.QType.Equals(QuestionTypes.HINFO))))
+            var subZoneName = zoneLabel.Replace(zoneLabel, "").TrimEnd('.');
+            foreach (var record in zone.ResourceRecords.Where(r => r.SubZoneName == subZoneName && r.ResourceClass.Equals(question.QClass) && (r.ResourceType.Equals(question.QType) || question.QType.Equals(QuestionTypes.STAR)) && !(question.QType.Equals(QuestionTypes.HINFO))))
             {
-                result.Answers.Add(new DNSResourceRecord { Name = zone.ZoneLabel, ResourceRecord = record });
+                result.Answers.Add(new DNSResourceRecord { Name = GetZoneName(zone.ZoneLabel, record.SubZoneName), ResourceRecord = record });
             }
 
-            if (!result.Answers.Any())
+            foreach (var record in zone.ResourceRecords.Where(r => r.ResourceType == ResourceTypes.NS || r.ResourceType == ResourceTypes.SOA))
             {
-                throw new DNSNameErrorException();
+                result.AuthoritativeNamespaceServers.Add(new DNSResourceRecord { Name = GetZoneName(zone.ZoneLabel, record.SubZoneName), ResourceRecord = record });
+            }
+
+            foreach(var record in zone.ResourceRecords.Where(r => r.ResourceType == ResourceTypes.A || r.ResourceType == ResourceTypes.AAAA))
+            {
+                result.AdditionalRecords.Add(new DNSResourceRecord { Name = GetZoneName(zone.ZoneLabel, record.SubZoneName), ResourceRecord = record });
             }
 
             result.Header.AnCount = (UInt16)result.Answers.Count();
+            result.Header.NsCount = (UInt16)result.AuthoritativeNamespaceServers.Count();
+            result.Header.ArCount = (UInt16)result.AdditionalRecords.Count();
             return result;
+        }
+
+        private static string GetZoneName(string zoneLabel, string subZoneLabel)
+        {
+            if (!string.IsNullOrWhiteSpace(subZoneLabel))
+            {
+                return $"{subZoneLabel}.{zoneLabel}";
+            }
+
+            return zoneLabel;
         }
     }
 }

@@ -14,19 +14,39 @@ namespace DnsServer.ConsoleClient
             var dnsServer = new DnsServerHostBuilder(o =>
                 {
                     o.ExcludeForwardRequests.Add(new Regex("^.*example\\.com$"));
-                    o.ExcludeForwardRequests.Add(new Regex("^.*example\\.com\\.home$"));
                     o.ExcludeForwardRequests.Add(new Regex("^.*in-addr\\.arpa$"));
                 })
-                .UseAddress("127.0.0.1", 53)
                 .AddDNSZones(new List<DNSZone>
                 {
                     new DNSZone("example.com")
                     {
                         ResourceRecords = new List<ResourceRecord>
                         {
-                            new AResourceRecord(100)
+                            new AResourceRecord(3600)
                             {
                                 Address = "127.0.0.1"
+                            },
+                            new AResourceRecord(3600, "www")
+                            {
+                                Address = "127.0.0.1"
+                            },
+                            new AResourceRecord(3600, "ns1")
+                            {
+                                Address = "127.0.0.1"
+                            },
+                            new SOAResourceRecord(3600)
+                            {
+                                MName = "ns1.example.com",
+                                RName = "admin.example.com",
+                                Serial = 5,
+                                Refresh = 604800,
+                                Expire = 2419200,
+                                Minimum = 604800,
+                                Retry = 86400
+                            },
+                            new NSResourceRecord(3600)
+                            {
+                                NSDName = "ns1.example.com"
                             }
                         }
                     },
@@ -41,6 +61,7 @@ namespace DnsServer.ConsoleClient
                         }
                     }
                 })
+                .AddDNSRootServers(DnsServerConstants.DefaultRootServers)
                 .Build();
             dnsServer.Run();
             dnsServer.DnsRequestReceived += HandleDnsRequestReceived;
